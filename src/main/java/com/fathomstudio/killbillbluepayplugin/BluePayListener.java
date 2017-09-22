@@ -51,9 +51,6 @@ public class BluePayListener extends PluginConfigurationEventHandler implements 
 	
 	@Override
 	public void handleKillbillEvent(final ExtBusEvent killbillEvent) {
-		
-		logService.log(LogService.LOG_INFO, "Received event " + killbillEvent.getEventType() + " for object id " + killbillEvent.getObjectId() + " of type " + killbillEvent.getObjectType());
-		
 		switch (killbillEvent.getEventType()) {
 			//
 			// Calls java plugin framework PluginConfigurationEventHandler to handle TENANT_CONFIG_CHANGE/TENANT_CONFIG_DELETION events
