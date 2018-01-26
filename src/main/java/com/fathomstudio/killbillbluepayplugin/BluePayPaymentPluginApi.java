@@ -44,10 +44,10 @@ import java.util.*;
  */
 public class BluePayPaymentPluginApi implements PaymentPluginApi {
 	
-	private final Properties             properties;
+	private final Properties properties;
 	private final OSGIKillbillLogService logService;
-	private       OSGIKillbillAPI        killbillAPI;
-	private       OSGIKillbillDataSource dataSource;
+	private OSGIKillbillAPI killbillAPI;
+	private OSGIKillbillDataSource dataSource;
 	
 	public BluePayPaymentPluginApi(final Properties properties, final OSGIKillbillLogService logService, final OSGIKillbillAPI killbillAPI, OSGIKillbillDataSource dataSource) {
 		this.properties = properties;
@@ -64,50 +64,62 @@ public class BluePayPaymentPluginApi implements PaymentPluginApi {
 			public UUID getKbPaymentId() {
 				return kbPaymentId;
 			}
+			
 			@Override
 			public UUID getKbTransactionPaymentId() {
 				return kbTransactionId;
 			}
+			
 			@Override
 			public TransactionType getTransactionType() {
 				return null;
 			}
+			
 			@Override
 			public BigDecimal getAmount() {
 				return null;
 			}
+			
 			@Override
 			public Currency getCurrency() {
 				return null;
 			}
+			
 			@Override
 			public DateTime getCreatedDate() {
 				return null;
 			}
+			
 			@Override
 			public DateTime getEffectiveDate() {
 				return null;
 			}
+			
 			@Override
 			public PaymentPluginStatus getStatus() {
 				return PaymentPluginStatus.CANCELED;
 			}
+			
 			@Override
 			public String getGatewayError() {
 				return null;
 			}
+			
 			@Override
 			public String getGatewayErrorCode() {
 				return null;
 			}
+			
 			@Override
 			public String getFirstPaymentReferenceId() {
 				return null;
 			}
+			
 			@Override
 			public String getSecondPaymentReferenceId() {
 				return null;
 			}
+			
 			@Override
 			public List<PluginProperty> getProperties() {
 				return null;
@@ -123,50 +135,62 @@ public class BluePayPaymentPluginApi implements PaymentPluginApi {
 			public UUID getKbPaymentId() {
 				return kbPaymentId;
 			}
+			
 			@Override
 			public UUID getKbTransactionPaymentId() {
 				return kbTransactionId;
 			}
+			
 			@Override
 			public TransactionType getTransactionType() {
 				return null;
 			}
+			
 			@Override
 			public BigDecimal getAmount() {
 				return null;
 			}
+			
 			@Override
 			public Currency getCurrency() {
 				return null;
 			}
+			
 			@Override
 			public DateTime getCreatedDate() {
 				return null;
 			}
+			
 			@Override
 			public DateTime getEffectiveDate() {
 				return null;
 			}
+			
 			@Override
 			public PaymentPluginStatus getStatus() {
 				return PaymentPluginStatus.CANCELED;
 			}
+			
 			@Override
 			public String getGatewayError() {
 				return null;
 			}
+			
 			@Override
 			public String getGatewayErrorCode() {
 				return null;
 			}
+			
 			@Override
 			public String getFirstPaymentReferenceId() {
 				return null;
 			}
+			
 			@Override
 			public String getSecondPaymentReferenceId() {
 				return null;
 			}
+			
 			@Override
 			public List<PluginProperty> getProperties() {
 				return null;
@@ -244,6 +268,14 @@ public class BluePayPaymentPluginApi implements PaymentPluginApi {
 			throw new PaymentPluginApiException("could not retrieve transaction ID", e);
 		}
 		
+		String description = "Kill Bill payment.";
+		for (PluginProperty property : properties) {
+			if (Objects.equals(property.getKey(), "description")) {
+				description = property.getValue().toString();
+			}
+		}
+		payment.setMemo(description);
+		
 		// setup the sale including amount and the transactionId
 		HashMap<String, String> sale = new HashMap<>();
 		sale.put("amount", amount.toString());
@@ -260,14 +292,14 @@ public class BluePayPaymentPluginApi implements PaymentPluginApi {
 		// make sure the request was successful
 		if (payment.isSuccessful()) {
 			logService.log(LogService.LOG_INFO, "BluePay payment successful");
-			logService.log(LogService.LOG_INFO,"Transaction Status: " + payment.getStatus());
-			logService.log(LogService.LOG_INFO,"Transaction ID: " + payment.getTransID());
-			logService.log(LogService.LOG_INFO,"Transaction Message: " + payment.getMessage());
-			logService.log(LogService.LOG_INFO,"AVS Result: " + payment.getAVS());
-			logService.log(LogService.LOG_INFO,"CVV2: " + payment.getCVV2());
-			logService.log(LogService.LOG_INFO,"Masked Payment Account: " + payment.getMaskedPaymentAccount());
-			logService.log(LogService.LOG_INFO,"Card Type: " + payment.getCardType());
-			logService.log(LogService.LOG_INFO,"Authorization Code: " + payment.getAuthCode());
+			logService.log(LogService.LOG_INFO, "Transaction Status: " + payment.getStatus());
+			logService.log(LogService.LOG_INFO, "Transaction ID: " + payment.getTransID());
+			logService.log(LogService.LOG_INFO, "Transaction Message: " + payment.getMessage());
+			logService.log(LogService.LOG_INFO, "AVS Result: " + payment.getAVS());
+			logService.log(LogService.LOG_INFO, "CVV2: " + payment.getCVV2());
+			logService.log(LogService.LOG_INFO, "Masked Payment Account: " + payment.getMaskedPaymentAccount());
+			logService.log(LogService.LOG_INFO, "Card Type: " + payment.getCardType());
+			logService.log(LogService.LOG_INFO, "Authorization Code: " + payment.getAuthCode());
 		} else {
 			logService.log(LogService.LOG_ERROR, "BluePay payment unsuccessful: " + payment.getMessage());
 		}
@@ -278,50 +310,62 @@ public class BluePayPaymentPluginApi implements PaymentPluginApi {
 			public UUID getKbPaymentId() {
 				return kbPaymentId;
 			}
+			
 			@Override
 			public UUID getKbTransactionPaymentId() {
 				return kbTransactionId;
 			}
+			
 			@Override
 			public TransactionType getTransactionType() {
 				return TransactionType.PURCHASE;
 			}
+			
 			@Override
 			public BigDecimal getAmount() {
 				return amount;
 			}
+			
 			@Override
 			public Currency getCurrency() {
 				return currency;
 			}
+			
 			@Override
 			public DateTime getCreatedDate() {
 				return DateTime.now();
 			}
+			
 			@Override
 			public DateTime getEffectiveDate() {
 				return DateTime.now();
 			}
+			
 			@Override
 			public PaymentPluginStatus getStatus() {
 				return payment.isSuccessful() ? PaymentPluginStatus.PROCESSED : PaymentPluginStatus.ERROR;
 			}
+			
 			@Override
 			public String getGatewayError() {
 				return payment.getMessage();
 			}
+			
 			@Override
 			public String getGatewayErrorCode() {
 				return payment.getStatus();
 			}
+			
 			@Override
 			public String getFirstPaymentReferenceId() {
 				return null;
 			}
+			
 			@Override
 			public String getSecondPaymentReferenceId() {
 				return null;
 			}
+			
 			@Override
 			public List<PluginProperty> getProperties() {
 				return null;
@@ -337,50 +381,62 @@ public class BluePayPaymentPluginApi implements PaymentPluginApi {
 			public UUID getKbPaymentId() {
 				return kbPaymentId;
 			}
+			
 			@Override
 			public UUID getKbTransactionPaymentId() {
 				return kbTransactionId;
 			}
+			
 			@Override
 			public TransactionType getTransactionType() {
 				return null;
 			}
+			
 			@Override
 			public BigDecimal getAmount() {
 				return null;
 			}
+			
 			@Override
 			public Currency getCurrency() {
 				return null;
 			}
+			
 			@Override
 			public DateTime getCreatedDate() {
 				return null;
 			}
+			
 			@Override
 			public DateTime getEffectiveDate() {
 				return null;
 			}
+			
 			@Override
 			public PaymentPluginStatus getStatus() {
 				return PaymentPluginStatus.CANCELED;
 			}
+			
 			@Override
 			public String getGatewayError() {
 				return null;
 			}
+			
 			@Override
 			public String getGatewayErrorCode() {
 				return null;
 			}
+			
 			@Override
 			public String getFirstPaymentReferenceId() {
 				return null;
 			}
+			
 			@Override
 			public String getSecondPaymentReferenceId() {
 				return null;
 			}
+			
 			@Override
 			public List<PluginProperty> getProperties() {
 				return null;
@@ -396,50 +452,62 @@ public class BluePayPaymentPluginApi implements PaymentPluginApi {
 			public UUID getKbPaymentId() {
 				return kbPaymentId;
 			}
+			
 			@Override
 			public UUID getKbTransactionPaymentId() {
 				return kbTransactionId;
 			}
+			
 			@Override
 			public TransactionType getTransactionType() {
 				return null;
 			}
+			
 			@Override
 			public BigDecimal getAmount() {
 				return null;
 			}
+			
 			@Override
 			public Currency getCurrency() {
 				return null;
 			}
+			
 			@Override
 			public DateTime getCreatedDate() {
 				return null;
 			}
+			
 			@Override
 			public DateTime getEffectiveDate() {
 				return null;
 			}
+			
 			@Override
 			public PaymentPluginStatus getStatus() {
 				return PaymentPluginStatus.CANCELED;
 			}
+			
 			@Override
 			public String getGatewayError() {
 				return null;
 			}
+			
 			@Override
 			public String getGatewayErrorCode() {
 				return null;
 			}
+			
 			@Override
 			public String getFirstPaymentReferenceId() {
 				return null;
 			}
+			
 			@Override
 			public String getSecondPaymentReferenceId() {
 				return null;
 			}
+			
 			@Override
 			public List<PluginProperty> getProperties() {
 				return null;
@@ -455,50 +523,62 @@ public class BluePayPaymentPluginApi implements PaymentPluginApi {
 			public UUID getKbPaymentId() {
 				return kbPaymentId;
 			}
+			
 			@Override
 			public UUID getKbTransactionPaymentId() {
 				return kbTransactionId;
 			}
+			
 			@Override
 			public TransactionType getTransactionType() {
 				return null;
 			}
+			
 			@Override
 			public BigDecimal getAmount() {
 				return null;
 			}
+			
 			@Override
 			public Currency getCurrency() {
 				return null;
 			}
+			
 			@Override
 			public DateTime getCreatedDate() {
 				return null;
 			}
+			
 			@Override
 			public DateTime getEffectiveDate() {
 				return null;
 			}
+			
 			@Override
 			public PaymentPluginStatus getStatus() {
 				return PaymentPluginStatus.CANCELED;
 			}
+			
 			@Override
 			public String getGatewayError() {
 				return null;
 			}
+			
 			@Override
 			public String getGatewayErrorCode() {
 				return null;
 			}
+			
 			@Override
 			public String getFirstPaymentReferenceId() {
 				return null;
 			}
+			
 			@Override
 			public String getSecondPaymentReferenceId() {
 				return null;
 			}
+			
 			@Override
 			public List<PluginProperty> getProperties() {
 				return null;
@@ -520,18 +600,22 @@ public class BluePayPaymentPluginApi implements PaymentPluginApi {
 			public Long getCurrentOffset() {
 				return null;
 			}
+			
 			@Override
 			public Long getNextOffset() {
 				return null;
 			}
+			
 			@Override
 			public Long getMaxNbRecords() {
 				return null;
 			}
+			
 			@Override
 			public Long getTotalNbRecords() {
 				return null;
 			}
+			
 			@Override
 			public Iterator<PaymentTransactionInfoPlugin> iterator() {
 				return null;
@@ -691,6 +775,8 @@ public class BluePayPaymentPluginApi implements PaymentPluginApi {
 			throw new PaymentPluginApiException("unknown paymentType: " + paymentType, new IllegalArgumentException());
 		}
 		
+		bluePay.setMemo("authorization");
+		
 		HashMap<String, String> auth = new HashMap<>();
 		auth.put("amount", "0.00");
 		bluePay.auth(auth);
@@ -706,14 +792,14 @@ public class BluePayPaymentPluginApi implements PaymentPluginApi {
 		// make sure the request was successful
 		if (bluePay.isSuccessful()) {
 			logService.log(LogService.LOG_INFO, "BluePay token request successful");
-			logService.log(LogService.LOG_INFO,"Transaction Status: " + bluePay.getStatus());
-			logService.log(LogService.LOG_INFO,"Transaction ID: " + bluePay.getTransID());
-			logService.log(LogService.LOG_INFO,"Transaction Message: " + bluePay.getMessage());
-			logService.log(LogService.LOG_INFO,"AVS Result: " + bluePay.getAVS());
-			logService.log(LogService.LOG_INFO,"CVV2: " + bluePay.getCVV2());
-			logService.log(LogService.LOG_INFO,"Masked Payment Account: " + bluePay.getMaskedPaymentAccount());
-			logService.log(LogService.LOG_INFO,"Card Type: " + bluePay.getCardType());
-			logService.log(LogService.LOG_INFO,"Authorization Code: " + bluePay.getAuthCode());
+			logService.log(LogService.LOG_INFO, "Transaction Status: " + bluePay.getStatus());
+			logService.log(LogService.LOG_INFO, "Transaction ID: " + bluePay.getTransID());
+			logService.log(LogService.LOG_INFO, "Transaction Message: " + bluePay.getMessage());
+			logService.log(LogService.LOG_INFO, "AVS Result: " + bluePay.getAVS());
+			logService.log(LogService.LOG_INFO, "CVV2: " + bluePay.getCVV2());
+			logService.log(LogService.LOG_INFO, "Masked Payment Account: " + bluePay.getMaskedPaymentAccount());
+			logService.log(LogService.LOG_INFO, "Card Type: " + bluePay.getCardType());
+			logService.log(LogService.LOG_INFO, "Authorization Code: " + bluePay.getAuthCode());
 		} else {
 			logService.log(LogService.LOG_ERROR, "BluePay token request unsuccessful: " + bluePay.getMessage());
 			throw new PaymentPluginApiException("BluePay token request unsuccessful", bluePay.getMessage());
@@ -747,14 +833,17 @@ public class BluePayPaymentPluginApi implements PaymentPluginApi {
 			public UUID getKbPaymentMethodId() {
 				return kbPaymentMethodId;
 			}
+			
 			@Override
 			public String getExternalPaymentMethodId() {
 				return null;
 			}
+			
 			@Override
 			public boolean isDefaultPaymentMethod() {
 				return false;
 			}
+			
 			@Override
 			public List<PluginProperty> getProperties() {
 				return null;
@@ -781,18 +870,22 @@ public class BluePayPaymentPluginApi implements PaymentPluginApi {
 			public Long getCurrentOffset() {
 				return null;
 			}
+			
 			@Override
 			public Long getNextOffset() {
 				return null;
 			}
+			
 			@Override
 			public Long getMaxNbRecords() {
 				return null;
 			}
+			
 			@Override
 			public Long getTotalNbRecords() {
 				return null;
 			}
+			
 			@Override
 			public Iterator<PaymentMethodPlugin> iterator() {
 				return null;
@@ -813,18 +906,22 @@ public class BluePayPaymentPluginApi implements PaymentPluginApi {
 			public UUID getKbAccountId() {
 				return kbAccountId;
 			}
+			
 			@Override
 			public String getFormMethod() {
 				return null;
 			}
+			
 			@Override
 			public String getFormUrl() {
 				return null;
 			}
+			
 			@Override
 			public List<PluginProperty> getFormFields() {
 				return null;
 			}
+			
 			@Override
 			public List<PluginProperty> getProperties() {
 				return null;
@@ -840,18 +937,22 @@ public class BluePayPaymentPluginApi implements PaymentPluginApi {
 			public UUID getKbPaymentId() {
 				return null;
 			}
+			
 			@Override
 			public int getStatus() {
 				return 0;
 			}
+			
 			@Override
 			public String getEntity() {
 				return null;
 			}
+			
 			@Override
 			public Map<String, List<String>> getHeaders() {
 				return null;
 			}
+			
 			@Override
 			public List<PluginProperty> getProperties() {
 				return null;
