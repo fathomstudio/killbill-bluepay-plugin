@@ -31,6 +31,7 @@ import org.killbill.billing.plugin.api.notification.PluginConfigurationHandler;
 import org.osgi.service.log.LogService;
 
 import javax.annotation.Nullable;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.UUID;
@@ -40,7 +41,7 @@ import java.util.UUID;
  */
 public class BluePayListener extends PluginConfigurationEventHandler implements OSGIKillbillEventDispatcher.OSGIKillbillEventHandler {
 	
-	private final LogService      logService;
+	private final LogService logService;
 	private final OSGIKillbillAPI osgiKillbillAPI;
 	
 	public BluePayListener(final OSGIKillbillLogService logService, final OSGIKillbillAPI killbillAPI, final OSGIKillbillDataSource dataSource) {
@@ -95,7 +96,7 @@ public class BluePayListener extends PluginConfigurationEventHandler implements 
 	//
 	private static class BluePayPluginConfigurationHandler extends PluginConfigurationHandler {
 		
-		private final LogService             logService;
+		private final LogService logService;
 		private final OSGIKillbillDataSource dataSource;
 		
 		public BluePayPluginConfigurationHandler(String pluginName, OSGIKillbillAPI osgiKillbillAPI, OSGIKillbillLogService osgiKillbillLogService, OSGIKillbillDataSource dataSource) {
@@ -125,18 +126,22 @@ public class BluePayListener extends PluginConfigurationEventHandler implements 
 			logService.log(LogService.LOG_INFO, "configured with secretKey: " + secretKey);
 			logService.log(LogService.LOG_INFO, "configured with test: " + test);
 			
-			// save the details to the database
-			String credentialsQuery = "INSERT INTO `bluePay_credentials` (`tenantId`, `accountId`, `secretKey`, `test`) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE `tenantId` = ?, `accountId` = ?, `secretKey` = ?, `test` = ?";
-			try (PreparedStatement statement = dataSource.getDataSource().getConnection().prepareStatement(credentialsQuery)) {
-				statement.setString(1, kbTenantId.toString());
-				statement.setString(2, accountId);
-				statement.setString(3, secretKey);
-				statement.setBoolean(4, test);
-				statement.setString(5, kbTenantId.toString());
-				statement.setString(6, accountId);
-				statement.setString(7, secretKey);
-				statement.setBoolean(8, test);
-				statement.executeUpdate();
+			try (Connection connection = dataSource.getDataSource().getConnection()) {
+				// save the details to the database
+				String credentialsQuery = "INSERT INTO `bluePay_credentials` (`tenantId`, `accountId`, `secretKey`, `test`) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE `tenantId` = ?, `accountId` = ?, `secretKey` = ?, `test` = ?";
+				try (PreparedStatement statement = connection.prepareStatement(credentialsQuery)) {
+					statement.setString(1, kbTenantId.toString());
+					statement.setString(2, accountId);
+					statement.setString(3, secretKey);
+					statement.setBoolean(4, test);
+					statement.setString(5, kbTenantId.toString());
+					statement.setString(6, accountId);
+					statement.setString(7, secretKey);
+					statement.setBoolean(8, test);
+					statement.executeUpdate();
+				} catch (SQLException e) {
+					logService.log(LogService.LOG_ERROR, "could not configure tenant: ", e);
+				}
 			} catch (SQLException e) {
 				logService.log(LogService.LOG_ERROR, "could not configure tenant: ", e);
 			}
