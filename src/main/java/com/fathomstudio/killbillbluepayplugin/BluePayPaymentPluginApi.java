@@ -278,6 +278,8 @@ public class BluePayPaymentPluginApi implements PaymentPluginApi {
 			}
 			payment.setMemo(description);
 			
+			payment.setOrderID(kbTransactionId.toString());
+			
 			// setup the sale including amount and the transactionId
 			HashMap<String, String> sale = new HashMap<>();
 			sale.put("amount", amount.toString());
@@ -303,7 +305,15 @@ public class BluePayPaymentPluginApi implements PaymentPluginApi {
 				logService.log(LogService.LOG_INFO, "Card Type: " + payment.getCardType());
 				logService.log(LogService.LOG_INFO, "Authorization Code: " + payment.getAuthCode());
 			} else {
-				logService.log(LogService.LOG_ERROR, "BluePay payment unsuccessful: " + payment.getMessage());
+				logService.log(LogService.LOG_INFO, "BluePay payment successful");
+				logService.log(LogService.LOG_INFO, "Transaction Status: " + payment.getStatus());
+				logService.log(LogService.LOG_INFO, "Transaction ID: " + payment.getTransID());
+				logService.log(LogService.LOG_INFO, "Transaction Message: " + payment.getMessage());
+				logService.log(LogService.LOG_INFO, "AVS Result: " + payment.getAVS());
+				logService.log(LogService.LOG_INFO, "CVV2: " + payment.getCVV2());
+				logService.log(LogService.LOG_INFO, "Masked Payment Account: " + payment.getMaskedPaymentAccount());
+				logService.log(LogService.LOG_INFO, "Card Type: " + payment.getCardType());
+				logService.log(LogService.LOG_INFO, "Authorization Code: " + payment.getAuthCode());
 			}
 			
 			// send response
