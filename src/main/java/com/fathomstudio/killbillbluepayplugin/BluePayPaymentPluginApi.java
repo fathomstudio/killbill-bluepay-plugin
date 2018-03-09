@@ -688,6 +688,8 @@ public class BluePayPaymentPluginApi implements PaymentPluginApi {
 			String routingNumber = null;
 			String accountNumber = null;
 			
+			String donorIp = null;
+			
 			// get the client-passed properties including BluePay auth details and appropriate credit card or ACH details
 			for (PluginProperty property : paymentMethodProps.getProperties()) {
 				String key = property.getKey();
@@ -709,6 +711,10 @@ public class BluePayPaymentPluginApi implements PaymentPluginApi {
 					routingNumber = value.toString();
 				} else if (Objects.equals(key, "accountNumber")) {
 					accountNumber = value.toString();
+				} else if (Objects.equals(key, "donorIp")) {
+					if (value != null) {
+						donorIp = value.toString();
+					}
 				} else {
 					throw new PaymentPluginApiException("unrecognized plugin property: " + key, new IllegalArgumentException());
 				}
@@ -798,6 +804,8 @@ public class BluePayPaymentPluginApi implements PaymentPluginApi {
 			HashMap<String, String> auth = new HashMap<>();
 			auth.put("amount", "0.00");
 			bluePay.auth(auth);
+			
+			bluePay.CUSTOMER_IP = donorIp;
 			
 			// request the token
 			try {

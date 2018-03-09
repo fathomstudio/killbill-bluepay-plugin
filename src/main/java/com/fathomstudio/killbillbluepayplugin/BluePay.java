@@ -113,6 +113,7 @@ public class BluePay
 	private String RRNO = "";
 	private String ID = "";
 	private String API = "";
+	public String CUSTOMER_IP = "";
 	
 	private HashMap<String, String> response = new HashMap<String, String>();
 	
@@ -951,6 +952,7 @@ public class BluePay
 			BP_URL = "https://secure.bluepay.com/interfaces/bp10emu";
 			nameValuePairs.add(new BasicNameValuePair("MERCHANT", BP_MERCHANT));
 			nameValuePairs.add(new BasicNameValuePair("TAMPER_PROOF_SEAL", calcTPS()));
+			nameValuePairs.add(new BasicNameValuePair("CUSTOMER_IP", CUSTOMER_IP));
 			nameValuePairs.add(new BasicNameValuePair("PAYMENT_TYPE", PAYMENT_TYPE));
 			nameValuePairs.add(new BasicNameValuePair("TRANSACTION_TYPE", TRANSACTION_TYPE));
 			nameValuePairs.add(new BasicNameValuePair("AMOUNT", AMOUNT));
