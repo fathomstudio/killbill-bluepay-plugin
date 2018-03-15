@@ -273,7 +273,8 @@ public class BluePayPaymentPluginApi implements PaymentPluginApi {
 			String description = "Kill Bill payment.";
 			for (PluginProperty property : properties) {
 				if (Objects.equals(property.getKey(), "description")) {
-					description = property.getValue().toString();
+					Object value = property.getValue();
+					description = value == null ? "" : value.toString();
 				}
 			}
 			payment.setMemo(description);
@@ -800,6 +801,8 @@ public class BluePayPaymentPluginApi implements PaymentPluginApi {
 			}
 			
 			bluePay.setMemo("authorization");
+			
+			bluePay.setOrderID(kbPaymentMethodId.toString());
 			
 			HashMap<String, String> auth = new HashMap<>();
 			auth.put("amount", "0.00");
