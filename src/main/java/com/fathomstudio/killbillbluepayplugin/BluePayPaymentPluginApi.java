@@ -256,6 +256,7 @@ public class BluePayPaymentPluginApi implements PaymentPluginApi {
 			}
 			
 			String transactionId;
+			String donorIp = null;
 			
 			String transactionIdQuery = "SELECT `transactionId` FROM `bluePay_paymentMethods` WHERE `paymentMethodId` = ?";
 			try (PreparedStatement statement = connection.prepareStatement(transactionIdQuery)) {
@@ -272,9 +273,14 @@ public class BluePayPaymentPluginApi implements PaymentPluginApi {
 			
 			String description = "Kill Bill payment.";
 			for (PluginProperty property : properties) {
-				if (Objects.equals(property.getKey(), "description")) {
-					Object value = property.getValue();
+				Object key = property.getKey();
+				Object value = property.getValue();
+				if (Objects.equals(key, "description")) {
 					description = value == null ? "" : value.toString();
+				} else if (Objects.equals(key, "donorIp")) {
+					if (value != null) {
+						donorIp = value.toString();
+					}
 				}
 			}
 			payment.setMemo(description);
@@ -286,6 +292,8 @@ public class BluePayPaymentPluginApi implements PaymentPluginApi {
 			sale.put("amount", amount.toString());
 			sale.put("transactionID", transactionId);
 			payment.sale(sale);
+			
+			payment.CUSTOMER_IP = donorIp;
 			
 			// do the payment
 			try {
